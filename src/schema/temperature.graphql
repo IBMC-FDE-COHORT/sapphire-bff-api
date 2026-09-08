@@ -1,0 +1,32 @@
+"""Aggregated body temperature data point for a single time period."""
+type TemperatureDataPoint {
+  periodStart: String!
+  minCelsius: Float!
+  maxCelsius: Float!
+  avgCelsius: Float!
+  recordCount: Int!
+}
+
+"""Body temperature trend chart response for a user over a requested range."""
+type TemperatureChartData {
+  userId: ID!
+  unit: String!
+  range: ChartRange!
+  dataPoints: [TemperatureDataPoint!]!
+}
+
+extend type Query {
+  """
+  Returns aggregated body temperature trend data for a user.
+
+  Requires authentication. The userId argument must match the caller's
+  JWT subject claim; a mismatch returns a FORBIDDEN error.
+
+  Returns null when the user has no temperature records for the range.
+  """
+  temperatureChart(
+    userId: ID!
+    range: ChartRange!
+    deviceSource: String
+  ): TemperatureChartData
+}
